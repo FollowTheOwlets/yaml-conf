@@ -1,18 +1,38 @@
 import { join } from 'path';
-import { ConfigOptions } from '~src';
 import * as dotenv from 'dotenv';
-import * as dotenvExpand from 'dotenv-expand';
-import { DEFAULT_PROFILE } from './consts';
+import {
+  DEFAULT_PROFILE,
+  DOT_ENV_FILE,
+  DOT_ENV_FILE_LOCAL_PREFIX,
+} from '../common/const';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
+@Injectable()
 export class EnvFactory {
-  static default(options: ConfigOptions, profile: string) {
-    const envFilePath = join(
-      __dirname,
-      options.filePath,
-      profile === DEFAULT_PROFILE ? '.env' : `.env.${profile}`,
-    );
+  constructor(@Inject() private readonly logger: Logger) {}
 
-    const envConfig = dotenv.config({ path: envFilePath });
-    return dotenvExpand.expand(envConfig);
+  create(profile: string, dirname: string) {
+    try {
+      const envFiles: string[] = [];
+
+      if (profile !== DEFAULT_PROFILE) {
+        envFiles.push(
+          `${DOT_ENV_FILE}.${profile.toLowerCase()}${DOT_ENV_FILE_LOCAL_PREFIX}`,
+          `${DOT_ENV_FILE}.${profile.toLowerCase()}`,
+        );
+      }
+
+      envFiles.push(
+        `${DOT_ENV_FILE}${DOT_ENV_FILE_LOCAL_PREFIX}`,
+        `${DOT_ENV_FILE}`,
+      );
+
+      envFiles.forEach((file) => {
+        const envFilePath = join(dirname, file);
+        dotenv.config({ path: envFilePath });
+      });
+    } catch (e) {
+      this.logger.error('Error reading .env files', e);
+    }
   }
 }

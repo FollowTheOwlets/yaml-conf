@@ -1,18 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { YamlConfigModule } from '~src';
-import * as process from 'node:process';
 
-describe('ConfigService Dev', () => {
+describe('ConfigService Dir', () => {
   let service: ConfigService;
 
   beforeAll(() => {
-    process.env.PROFILE = 'DEV';
+    process.env.NODE_ENV = '';
   });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [YamlConfigModule.forRoot()],
+      imports: [
+        YamlConfigModule.forRoot({
+          filePath: 'testconfig',
+        }),
+      ],
       providers: [ConfigService],
     }).compile();
 
@@ -24,13 +27,10 @@ describe('ConfigService Dev', () => {
   });
 
   it('should return the correct value for a given key', () => {
-    const testVar = service.get('test.var');
-    expect(testVar).toBe('DEV');
+    const httpHost = service.get('http.host-dir');
+    expect(httpHost).toBe('127.0.0.1');
 
-    const httpHost = service.get('http.host-dev');
-    expect(httpHost).toBe('localhost');
-
-    const httpPort = service.get('http.port-dev');
-    expect(httpPort).toBe(3000);
+    const httpPort = service.get('http.port-dir');
+    expect(httpPort).toBe(443);
   });
 });

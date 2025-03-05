@@ -1,8 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigTestClass, YamlTestModule } from './yaml-test.module';
+import { YamlConfigModule } from '~src';
+import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+@Module({
+  imports: [YamlConfigModule.forRoot()],
+})
+export class YamlTestModule {}
 
 describe('Yaml Inject', () => {
-  let service: ConfigTestClass;
+  let service: ConfigService;
 
   beforeAll(() => {
     process.env.NODE_ENV = '';
@@ -11,10 +18,10 @@ describe('Yaml Inject', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [YamlTestModule],
-      providers: [ConfigTestClass],
+      providers: [ConfigService],
     }).compile();
 
-    service = module.get<ConfigTestClass>(ConfigTestClass);
+    service = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {

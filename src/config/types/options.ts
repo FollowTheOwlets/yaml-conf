@@ -1,3 +1,3 @@
-export interface ConfigOptions {
+export type ConfigOptions = {
   filePath: string;
-}
+};

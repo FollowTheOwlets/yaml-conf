@@ -1,6 +1,3 @@
 http:
-  port: <%= process.env.PORT %>
-  host: <%= process.env.HOST %>
-
-test:
-  var: <%= process.env.TEST_VAR_PROFILE %>
+  port-dir: <%= process.env.PORT %>
+  host-dir: <%= process.env.HOST %>
