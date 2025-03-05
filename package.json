@@ -1,6 +1,6 @@
 {
   "name": "@followtheowlets/yaml-conf",
-  "version": "1.0.0",
+  "version": "1.0.2-b",
   "description": "Yaml config for nest js",
   "author": "Fedorichev Lev",
   "private": false,
